@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hitung Zikir</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: #093725;
+            color: #ffffff;
+        }
+        header {
+            text-align: center;
+            padding: 25px;
+            margin-top: 40px;
+            color:#edcd62;
+        }
+        main {
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        section {
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.12);
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+            text-align: center;
+            transition: all 0.3s ease;
+            flex: 1 1 400px;
+            max-width: 480px;
+        }
+
+        section:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 25px 45px rgba(0,0,0,0.35);
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            opacity: 0.8;
+        }
+
+        #angka {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin: 20px 0;
+            color: #ffecac;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: 0.2s ease;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        button:focus {
+            outline: none;
+        }
+
+        button:hover {
+            transform: scale(1.02);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+        
+        #tambah {
+            background: #14532d;
+            color: #ffffff;
+        }
+
+        #reset {
+            background: rgba(194, 252, 194, 0.9);
+            color: #093725;
+        }
+
+        #notif {
+            margin-top: 15px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: #78c896;
+        }
+
+        .sukses {
+            animation: pop 0.5s ease;
+        }
+
+        input {
+            width: 70px;
+            padding: 6px;
+            border-radius: 8px;
+            border: none;
+            text-align: center;
+        }
+
+        section div {
+             margin-bottom: 10px;
+        }
+        @keyframes pop {
+            0% { transform: scale(1);}
+            50% { transform: scale(1.2);}
+            100% {transform: scale(1);}
+        }
+        @media (max-width: 768px) {
+
+         main {
+              padding: 20px;
+        }
+
+         section {
+              width: 100%;
+              max-width: 100%;
+              padding: 25px;
+        }
+
+         #angka {
+              font-size: 2.2rem;
+        }
+
+         button {
+              margin: 8px 0;
+        }
+
+        }
+    </style>
+</head>
+<body>
+
+  <header>
+    <h1>Hitung Zikir</h1> 
+  </header>
+    
+  <main>
+     <section>
+
+        <div id="notif"></div>
+
+        <div id="angka">0</div>
+        <div>
+            Target: <input type="number" id="inputTarget" value="33" min="1">
+        </div>
+
+        <button id="tambah">Tambah</button>
+        <button id="reset">Reset</button>
+
+     </section>  
+  </main>
+
+  <footer>
+    <p>@ 2026 Web Ramadan</p>
+  </footer>
+
+   <script>
+      let count = 0;
+      let inputTarget = 
+      document.getElementById("inputTarget")
+      let angkaTampil =
+      document.getElementById("angka");
+      let tombolTambah =
+      document.getElementById("tambah");
+      let tombolReset =
+      document.getElementById("reset");
+      let notif =
+      document.getElementById("notif");
+
+      tombolTambah.addEventListener("click",function() {
+        count++;
+        angkaTampil.textContent =count;
+        let target = Number(inputTarget.value);
+     if (count === target) {
+            notif.textContent = "🎉MasyaAllah! Target Tercapai!✨";
+            angkaTampil.classList.remove("sukses");
+            void angkaTampil.offsetWidth;
+            angkaTampil.classList.add("sukses")
+        } 
+     else if(count > target) {
+        notif.textContent ="";
+     }
+
+      });
+      tombolReset.addEventListener("click",function() {
+        count = 0;
+        angkaTampil.textContent =count;
+        notif.textContent = "";
+        angkaTampil.classList.remove("sukses")
+      });           
+   </script>    
+
+</body>
+</html>
