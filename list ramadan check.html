@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Ramadhan To-Do List</title>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+
+body{
+background:#0f3d2e;
+font-family:Arial, sans-serif;
+margin:0;
+color:white;
+}
+
+/* HEADER */
+
+header{
+text-align:center;
+padding:18px 10px;
+}
+
+header h2{
+color:#f1c75b;
+margin:0;
+}
+
+/* CONTAINER */
+
+.container{
+max-width:1000px;
+margin:auto;
+padding:15px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+}
+
+/* CARD */
+
+.card{
+background:rgba(255,255,255,0.06);
+backdrop-filter:blur(10px);
+border:1px solid rgba(255,255,255,0.12);
+border-radius:16px;
+padding:20px;
+}
+
+.card h3{
+color:#f1c75b;
+margin:0;
+}
+
+/* TITLE FLEX */
+
+.title{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:10px;
+}
+
+/* PROGRESS */
+
+.progress{
+height:10px;
+background:rgba(255,255,255,0.1);
+border-radius:10px;
+overflow:hidden;
+margin-top:10px;
+}
+
+.bar{
+height:100%;
+width:0%;
+background:#f1c75b;
+}
+
+/* BUTTON */
+
+button{
+margin-top:10px;
+padding:8px 15px;
+background:#f1c75b;
+border:none;
+border-radius:6px;
+font-weight:bold;
+cursor:pointer;
+color:#093725;
+}
+
+/* CALENDAR */
+
+.calendar{
+display:grid;
+grid-template-columns:repeat(7,1fr);
+gap:6px;
+margin-top:12px;
+}
+
+.day{
+background:rgba(255,255,255,0.1);
+padding:8px;
+border-radius:6px;
+text-align:center;
+}
+
+.today{
+background:#f1c75b;
+color:#093725;
+}
+
+/* STATUS */
+
+.status{
+margin-top:6px;
+color:#ffe8a3;
+font-weight:bold;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+.container{
+grid-template-columns:1fr;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>🌙 Ramadhan To-Do List</h2>
+</header>
+
+
+<div class="container">
+
+<!-- SHOLAT -->
+
+<div class="card">
+
+<div class="title">
+<h3>Sholat Wajib</h3>
+</div>
+
+<label><input type="checkbox" class="shalat"> Subuh</label><br>
+<label><input type="checkbox" class="shalat"> Dzuhur</label><br>
+<label><input type="checkbox" class="shalat"> Ashar</label><br>
+<label><input type="checkbox" class="shalat"> Maghrib</label><br>
+<label><input type="checkbox" class="shalat"> Isya</label><br>
+
+<div class="progress">
+<div class="bar" id="barSholat"></div>
+</div>
+
+<p id="persenSholat">0%</p>
+
+<div class="status" id="statusSholat"></div>
+
+<button onclick="hitungSholat()">Simpan</button>
+
+</div>
+
+
+<!-- QURAN -->
+
+<div class="card">
+
+<div class="title">
+<h3>Baca Al-Qur'an</h3>
+</div>
+
+<input id="target" type="number" placeholder="Target halaman"><br><br>
+
+<input id="baca" type="number" placeholder="Halaman dibaca">
+
+<div class="progress">
+<div class="bar" id="barQuran"></div>
+</div>
+
+<p id="textQuran"></p>
+
+<button onclick="hitungQuran()">Simpan</button>
+
+</div>
+
+
+<!-- PUASA -->
+
+<div class="card">
+
+<div class="title">
+<h3>Puasa Ramadhan</h3>
+<span id="tanggal"></span>
+</div>
+
+<label>
+<input type="checkbox" id="puasaHariIni" onclick="hitungPuasa()">
+Sudah Puasa Hari Ini
+</label>
+
+<div class="progress">
+<div class="bar" id="barPuasa"></div>
+</div>
+
+<p id="persenPuasa">0%</p>
+
+<div class="calendar" id="calendar"></div>
+
+</div>
+
+
+<!-- DZIKIR -->
+
+<div class="card">
+
+<div class="title">
+<h3>Dzikir Harian</h3>
+</div>
+
+<label><input type="checkbox" class="dzikir"> Dzikir pagi</label><br>
+<label><input type="checkbox" class="dzikir"> Dzikir petang</label><br>
+<label><input type="checkbox" class="dzikir"> Sayyidul Istighfar</label><br>
+<label><input type="checkbox" class="dzikir"> Subhanallah</label><br>
+<label><input type="checkbox" class="dzikir"> Alhamdulillah</label><br>
+<label><input type="checkbox" class="dzikir"> Allahu Akbar</label><br>
+<label><input type="checkbox" class="dzikir"> Laa ilaaha illallah</label>
+
+<div class="progress">
+<div class="bar" id="barDzikir"></div>
+</div>
+
+<p id="persenDzikir">0%</p>
+
+<button onclick="hitungDzikir()">Simpan</button>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* CONFETTI */
+
+function confettiRamadhan(){
+
+confetti({
+particleCount:120,
+spread:70,
+origin:{y:0.6}
+})
+
+}
+
+/* SHOLAT */
+
+function hitungSholat(){
+
+let data=document.querySelectorAll(".shalat")
+
+let done=0
+
+data.forEach(e=>{
+if(e.checked) done++
+})
+
+let persen=Math.round(done/5*100)
+
+document.getElementById("barSholat").style.width=persen+"%"
+
+document.getElementById("persenSholat").innerText=persen+"%"
+
+let status=""
+
+if(persen<=40) status="Belum optimal"
+else if(persen<=80) status="Cukup baik"
+else if(persen<100) status="Hampir sempurna"
+else{
+status="MasyaAllah luar biasa!"
+confettiRamadhan()
+}
+
+document.getElementById("statusSholat").innerText=status
+
+}
+
+
+/* QURAN */
+
+function hitungQuran(){
+
+let target=document.getElementById("target").value
+let baca=document.getElementById("baca").value
+
+let persen=Math.round(baca/target*100)
+
+document.getElementById("barQuran").style.width=persen+"%"
+
+let text=""
+
+if(persen<50) text="Masih bisa ditambah"
+else if(persen<90) text="Hampir selesai"
+else{
+text="Target tercapai"
+confettiRamadhan()
+}
+
+document.getElementById("textQuran").innerText=persen+"% - "+text
+
+}
+
+
+/* PUASA */
+
+function hitungPuasa(){
+
+let check=document.getElementById("puasaHariIni").checked
+
+let persen=check?100:0
+
+document.getElementById("barPuasa").style.width=persen+"%"
+
+document.getElementById("persenPuasa").innerText=persen+"%"
+
+if(persen==100){
+confettiRamadhan()
+}
+
+}
+
+
+/* DZIKIR */
+
+function hitungDzikir(){
+
+let data=document.querySelectorAll(".dzikir")
+
+let done=0
+
+data.forEach(e=>{
+if(e.checked) done++
+})
+
+let persen=Math.round(done/7*100)
+
+document.getElementById("barDzikir").style.width=persen+"%"
+
+document.getElementById("persenDzikir").innerText=persen+"%"
+
+if(persen==100){
+confettiRamadhan()
+}
+
+}
+
+
+/* CALENDAR */
+
+function kalender(){
+
+let cal=document.getElementById("calendar")
+
+let today=new Date().getDate()
+
+for(let i=1;i<=30;i++){
+
+let d=document.createElement("div")
+
+d.className="day"
+
+d.innerText=i
+
+if(i==today){
+d.classList.add("today")
+}
+
+cal.appendChild(d)
+
+}
+
+}
+
+
+/* TANGGAL */
+
+function tanggal(){
+
+let hari=["Ahad","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"]
+
+let now=new Date()
+
+document.getElementById("tanggal").innerText=
+hari[now.getDay()]+" , "+now.toLocaleDateString()
+
+}
+
+kalender()
+
+tanggal()
+
+</script>
+
+</body>
+</html>
